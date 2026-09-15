@@ -1,0 +1,43 @@
+{
+  "allowedHosts": [
+    "ezaudiobookforsoul.com",
+    "*.ezaudiobookforsoul.com",
+    "ezaudiocdn.b-cdn.net"
+  ],
+  "attribution": {
+    "author": "Synthetiq-HQ",
+    "authorizationURL": "https://ezaudiobookforsoul.com/",
+    "licenseName": "Prototype; release review required",
+    "website": "https://ezaudiobookforsoul.com/"
+  },
+  "baseURL": "https://ezaudiobookforsoul.com",
+  "capabilities": ["search", "details", "chapters", "audio", "discovery", "interactivePage"],
+  "contentRating": "unknown",
+  "contentType": "audio",
+  "contractVersion": 1,
+  "entry": {
+    "path": "modules/audiobooks-for-your-soul/index.js",
+    "sha256": "C45508570C7C4C8A87AE264D619CC368A98DD09E672BE5688FF0CF24D5519BC3"
+  },
+  "familyID": "audiobooks-for-your-soul",
+  "icon": {
+    "path": "modules/audiobooks-for-your-soul/icon.png",
+    "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+  },
+  "id": "audiobooks-for-your-soul",
+  "language": "en",
+  "legacyIDs": [],
+  "limits": {
+    "cacheTTLSeconds": 300,
+    "maxConcurrentRequests": 1,
+    "maxResponseBytes": 8388608,
+    "maxScriptBytes": 524288,
+    "timeoutMilliseconds": 30000
+  },
+  "minimumAppVersion": "1.7.0",
+  "name": "Audiobooks For Your Soul (Prototype)",
+  "releaseTrack": "beta",
+  "status": "active",
+  "universalLink": "https://synthetiq.uk/manga/modules/audiobooks-for-your-soul",
+  "version": "0.1.0"
+}

@@ -1,0 +1,10 @@
+{
+  "name": "synthetiq-manga-sources-test",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/audio-prototypes.test.mjs && node scripts/validate-test-repo.mjs && node scripts/check-production-overlap.mjs",
+    "test:live": "node scripts/live-audio-prototypes.mjs"
+  }
+}

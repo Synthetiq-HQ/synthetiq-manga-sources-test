@@ -1,0 +1,113 @@
+{
+  "generatedAt": "2026-09-16T00:00:00Z",
+  "modules": [
+    {
+      "id": "goldenaudiobooks",
+      "familyID": "goldenaudiobooks",
+      "name": "Goldenaudiobooks (Prototype)",
+      "version": "0.1.0",
+      "language": "en",
+      "contentType": "audio",
+      "contentRating": "unknown",
+      "releaseTrack": "beta",
+      "status": "active",
+      "sortPriority": 1,
+      "manifest": {
+        "path": "modules/goldenaudiobooks/manifest.json",
+        "sha256": "141AC768F52236D2588F0B9D5B6D47922522BCD84B1F8FEE1D6F168D9C00BFAD"
+      },
+      "icon": {
+        "path": "modules/goldenaudiobooks/icon.png",
+        "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+      }
+    },
+    {
+      "id": "hot-audiobooks",
+      "familyID": "hot-audiobooks",
+      "name": "Hot Audiobooks (Prototype)",
+      "version": "0.1.0",
+      "language": "en",
+      "contentType": "audio",
+      "contentRating": "unknown",
+      "releaseTrack": "beta",
+      "status": "active",
+      "sortPriority": 2,
+      "manifest": {
+        "path": "modules/hot-audiobooks/manifest.json",
+        "sha256": "DAE24191C9F2B260A076B3B93CABAB36861CF4294B40154EE4971295234C5EB4"
+      },
+      "icon": {
+        "path": "modules/hot-audiobooks/icon.png",
+        "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+      }
+    },
+    {
+      "id": "audioaz",
+      "familyID": "audioaz",
+      "name": "AudioAZ (Prototype)",
+      "version": "0.1.0",
+      "language": "multi",
+      "contentType": "audio",
+      "contentRating": "unknown",
+      "releaseTrack": "beta",
+      "status": "active",
+      "sortPriority": 3,
+      "manifest": {
+        "path": "modules/audioaz/manifest.json",
+        "sha256": "33E3D364E35CC1A4A3BB4A0059EEA53E07C483A582441AA6787882764AD3CC84"
+      },
+      "icon": {
+        "path": "modules/audioaz/icon.png",
+        "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+      }
+    },
+    {
+      "id": "audiobooks-for-your-soul",
+      "familyID": "audiobooks-for-your-soul",
+      "name": "Audiobooks For Your Soul (Prototype)",
+      "version": "0.1.0",
+      "language": "en",
+      "contentType": "audio",
+      "contentRating": "unknown",
+      "releaseTrack": "beta",
+      "status": "active",
+      "sortPriority": 4,
+      "manifest": {
+        "path": "modules/audiobooks-for-your-soul/manifest.json",
+        "sha256": "8C081350A5FF8DA91CB72C6AFE0BA3A6222481B84C6FFC5FD3C7698E4A275D9E"
+      },
+      "icon": {
+        "path": "modules/audiobooks-for-your-soul/icon.png",
+        "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+      }
+    },
+    {
+      "id": "audiobb",
+      "familyID": "audiobb",
+      "name": "AudioBB (Prototype)",
+      "version": "0.1.0",
+      "language": "en",
+      "contentType": "audio",
+      "contentRating": "unknown",
+      "releaseTrack": "beta",
+      "status": "active",
+      "sortPriority": 5,
+      "manifest": {
+        "path": "modules/audiobb/manifest.json",
+        "sha256": "C79492255AFB01F52B56DE5345EB801669BF4D1EC6B079C835CB2E814AFF94DE"
+      },
+      "icon": {
+        "path": "modules/audiobb/icon.png",
+        "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+      }
+    }
+  ],
+  "repository": {
+    "homepage": "https://github.com/Synthetiq-HQ/synthetiq-manga-sources-test",
+    "id": "synthetiq.sources.test",
+    "name": "Synthetiq Test Manga Sources",
+    "owner": "Synthetiq-HQ",
+    "universalLink": "https://synthetiq.uk/manga/modules/test"
+  },
+  "schemaVersion": 1
+}

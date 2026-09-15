@@ -1,0 +1,45 @@
+{
+  "allowedHosts": [
+    "audioaz.com",
+    "*.audioaz.com",
+    "archive.org",
+    "*.archive.org",
+    "f.audioaz.com"
+  ],
+  "attribution": {
+    "author": "Synthetiq-HQ",
+    "authorizationURL": "https://audioaz.com/",
+    "licenseName": "Prototype; release review required",
+    "website": "https://audioaz.com/"
+  },
+  "baseURL": "https://audioaz.com",
+  "capabilities": ["search", "details", "chapters", "audio", "discovery"],
+  "contentRating": "unknown",
+  "contentType": "audio",
+  "contractVersion": 1,
+  "entry": {
+    "path": "modules/audioaz/index.js",
+    "sha256": "C45EA73A6A3B76DFD050E13DCA8C89035B5A06ECB068D4554D5EED8BB08FCB03"
+  },
+  "familyID": "audioaz",
+  "icon": {
+    "path": "modules/audioaz/icon.png",
+    "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+  },
+  "id": "audioaz",
+  "language": "multi",
+  "legacyIDs": [],
+  "limits": {
+    "cacheTTLSeconds": 300,
+    "maxConcurrentRequests": 2,
+    "maxResponseBytes": 8388608,
+    "maxScriptBytes": 524288,
+    "timeoutMilliseconds": 30000
+  },
+  "minimumAppVersion": "1.7.0",
+  "name": "AudioAZ (Prototype)",
+  "releaseTrack": "beta",
+  "status": "active",
+  "universalLink": "https://synthetiq.uk/manga/modules/audioaz",
+  "version": "0.1.0"
+}
