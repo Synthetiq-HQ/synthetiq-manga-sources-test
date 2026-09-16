@@ -35,6 +35,7 @@
   }
 
   function safeURL(value, hosts) {
+    if (!text(value)) return null;
     try {
       const url = new URL(decodeHTML(value), BASE_URL);
       if (url.protocol !== "https:") return null;

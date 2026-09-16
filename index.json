@@ -14,7 +14,7 @@
       "sortPriority": 1,
       "manifest": {
         "path": "modules/goldenaudiobooks/manifest.json",
-        "sha256": "2dbcab67a82ac32b19235495f75fd0dc59562693de7cf0b058ca103f5aa14ad8"
+        "sha256": "4458e40ee284a3acbb2ab3dacedaf36f15a249750dcfc5b8f3c07f3a9d59ed31"
       },
       "icon": {
         "path": "modules/goldenaudiobooks/icon.png",

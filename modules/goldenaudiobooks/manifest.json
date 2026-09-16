@@ -18,7 +18,7 @@
   "contractVersion": 1,
   "entry": {
     "path": "modules/goldenaudiobooks/index.js",
-    "sha256": "1d05dc1a794904adf8ac2d491e17aabb057e1bd570a644c5b5b47fd2b99cc041"
+    "sha256": "74dded0b408025ed6c93f10ddc4d931e01c860101792bf6e7abe9ef39bbcc4ee"
   },
   "familyID": "goldenaudiobooks",
   "icon": {
