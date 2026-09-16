@@ -42,7 +42,7 @@ function response(body, options = {}) {
   };
 }
 
-function postFixture({ id, link, title, author, content, image }) {
+function postFixture({ id, link, title, author, content, image, terms = ["Fantasy", "Audio Book"] }) {
   return {
     id,
     link,
@@ -52,7 +52,7 @@ function postFixture({ id, link, title, author, content, image }) {
     _embedded: {
       author: author ? [{ name: author }] : [],
       "wp:featuredmedia": image ? [{ source_url: image }] : [],
-      "wp:term": [[{ name: "Fantasy" }, { name: "Audio Book" }]],
+      "wp:term": [terms.map((name) => ({ name }))],
     },
   };
 }
@@ -92,6 +92,7 @@ async function exerciseWordPressModule({ slug, apiBase, baseURL, idPrefix, postI
   const audio = await module.extractAudio(chapters[1].id);
   assert.equal(audio.tracks.length, 1);
   assert.match(audio.tracks[0].url, new RegExp(`^${audioHost.replace(".", "\\.")}`));
+  if (slug === "goldenaudiobooks") assert.equal(audio.tracks[0].url, `${audioHost}/fixture/02.mp3`);
   assert.equal(audio.tracks[0].format, "mp3");
   assert.ok(calls.some((url) => url.includes("_embed=1")));
   const discovery = await module.discoveryHome();
@@ -109,6 +110,36 @@ test("Goldenaudiobooks prototype handles WordPress search, details, complete aud
     title: "Fixture Game Audiobook",
     audioHost: "https://ipaudio.club",
   });
+});
+
+test("Goldenaudiobooks excludes explicitly adult-labelled catalogue entries", async () => {
+  const safePost = postFixture({
+    id: 2952,
+    link: "https://goldenaudiobooks.com/safe-audiobook/",
+    title: "Safe Fixture Audiobook",
+    author: "Fixture Author",
+    image: "https://goldenaudiobooks.com/wp-content/uploads/safe.jpg",
+    content: '<audio id="audio-2952-1"><source src="https://ipaudio.club/fixture/01.mp3" /></audio>',
+  });
+  const adultPost = postFixture({
+    id: 2953,
+    link: "https://goldenaudiobooks.com/adult-audiobook/",
+    title: "Adult Fixture Audiobook",
+    author: "Fixture Author",
+    image: "https://goldenaudiobooks.com/wp-content/uploads/adult.jpg",
+    terms: ["Adults"],
+    content: '<audio id="audio-2953-1"><source src="https://ipaudio.club/fixture/01.mp3" /></audio>',
+  });
+  const module = await loadModule("goldenaudiobooks", {
+    fetchv2: async (url) => {
+      if (String(url).includes("/posts?")) return response(JSON.stringify([safePost, adultPost]), { contentType: "application/json" });
+      if (String(url).includes("/posts/2953")) return response(JSON.stringify(adultPost), { contentType: "application/json" });
+      throw new Error(`Unexpected safety-filter URL: ${url}`);
+    },
+  });
+  const search = await module.searchResults("fixture", 1);
+  assert.deepEqual(Array.from(search.items, (item) => item.title), ["Safe Fixture Audiobook"]);
+  await assert.rejects(() => module.extractDetails("goldenaudiobooks:post:2953"), /content-safety filter/i);
 });
 
 test("Hot Audiobooks prototype handles WordPress search, details, and complete audio tracks", async () => {
@@ -225,6 +256,7 @@ test("All audiobook prototypes are present in the test catalogue", async () => {
     assert.equal(manifest.contentType, "audio");
     assert.ok(manifest.capabilities.includes("audio"));
     assert.equal(manifest.status, "active");
+    if (slug === "goldenaudiobooks") assert.equal(manifest.contentRating, "suggestive");
     const entryBytes = await readFile(new URL(`../${manifest.entry.path.replaceAll("\\", "/")}`, import.meta.url));
     const iconBytes = await readFile(new URL(`../${manifest.icon.path.replaceAll("\\", "/")}`, import.meta.url));
     assert.equal(manifest.entry.sha256.toLowerCase(), sha256(entryBytes));

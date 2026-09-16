@@ -7,6 +7,7 @@
   const MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
   const SOURCE_HOSTS = new Set(["goldenaudiobooks.com"]);
   const MEDIA_HOSTS = new Set(["goldenaudiobooks.com", "ipaudio.club"]);
+  const EXCLUDED_CONTENT = /18\+|\b(?:adult(?:s)?|mature|explicit|erotic(?:a)?|smut|nsfw|harem|yaoi|yuri|ecchi)\b/i;
 
   function text(value) {
     return String(value == null ? "" : value).trim();
@@ -44,6 +45,17 @@
     } catch (_) {
       return null;
     }
+  }
+
+  function mediaURL(value) {
+    if (!text(value)) return null;
+    const url = safeURL(value, MEDIA_HOSTS);
+    if (!url) return null;
+    const normalized = new URL(url);
+    if (normalized.hostname === "ipaudio.club" || normalized.hostname.endsWith(".ipaudio.club")) {
+      normalized.searchParams.delete("_");
+    }
+    return normalized.toString();
   }
 
   function attribute(tag, name) {
@@ -113,6 +125,11 @@
     return [...new Set(terms.flat().map((term) => stripHTML(term?.name)).filter(Boolean))];
   }
 
+  function isAllowedPost(post) {
+    const labels = [stripHTML(post?.title?.rendered), ...termsFor(post)].filter(Boolean).join(" ");
+    return !EXCLUDED_CONTENT.test(labels);
+  }
+
   function imageFor(post) {
     return safeURL(post?._embedded?.["wp:featuredmedia"]?.[0]?.source_url, SOURCE_HOSTS);
   }
@@ -120,6 +137,7 @@
   function itemFor(post) {
     const postID = post?.id;
     if (!Number.isInteger(Number(postID)) || Number(postID) < 1) return null;
+    if (!isAllowedPost(post)) return null;
     const title = stripHTML(post?.title?.rendered) || `Goldenaudiobooks ${postID}`;
     const url = safeURL(post?.link, SOURCE_HOSTS);
     if (!url) return null;
@@ -173,6 +191,7 @@
   async function fetchPost(postID) {
     const post = await requestJSON(`${API_URL}/posts/${postNumber(postID)}?_embed=1`);
     if (!post || !post.id) throw new Error("Goldenaudiobooks title was not found.");
+    if (!isAllowedPost(post)) throw new Error("Goldenaudiobooks title is excluded by the content-safety filter.");
     return post;
   }
 
@@ -183,10 +202,11 @@
     for (let index = 0; index < audioBlocks.length; index += 1) {
       const open = audioBlocks[index][1] || "";
       const inner = audioBlocks[index][2] || "";
-      const source = [...inner.matchAll(/<(?:source|a)\b([^>]*)>/gi)]
-        .map((match) => attribute(match[1] || "", "src") || attribute(match[1] || "", "href"))
-        .map((value) => safeURL(value, MEDIA_HOSTS))
-        .find(Boolean);
+      const mediaTags = [...inner.matchAll(/<(?:source|a)\b([^>]*)>/gi)].map((match) => match[1] || "");
+      const source = mediaTags
+        .map((tag) => mediaURL(attribute(tag, "href")))
+        .find(Boolean)
+        || mediaTags.map((tag) => mediaURL(attribute(tag, "src"))).find(Boolean);
       if (!source || seen.has(source)) continue;
       const audioID = attribute(open, "id");
       const numberMatch = audioID.match(/-(\d+)$/);

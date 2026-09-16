@@ -8,22 +8,22 @@
   "attribution": {
     "author": "Synthetiq-HQ",
     "authorizationURL": "https://goldenaudiobooks.com/",
-    "licenseName": "Prototype; release review required",
+    "licenseName": "Source-provided public web audio; rights unverified",
     "website": "https://goldenaudiobooks.com/"
   },
   "baseURL": "https://goldenaudiobooks.com",
   "capabilities": ["search", "details", "chapters", "audio", "discovery"],
-  "contentRating": "unknown",
+  "contentRating": "suggestive",
   "contentType": "audio",
   "contractVersion": 1,
   "entry": {
     "path": "modules/goldenaudiobooks/index.js",
-    "sha256": "b022c5d28d359f23b4d58d6701a938e8f7814fa19e274d2b8feb68807fb10e6c"
+    "sha256": "1d05dc1a794904adf8ac2d491e17aabb057e1bd570a644c5b5b47fd2b99cc041"
   },
   "familyID": "goldenaudiobooks",
   "icon": {
     "path": "modules/goldenaudiobooks/icon.png",
-    "sha256": "abbcbc4e308c5e8848695a861dd96194d0973bcf6cb6228778af5a65d33394da"
+    "sha256": "215237495d1561bd7683dc996ac4c0332c1c375bcbc7fe94945af576c92d4ebd"
   },
   "id": "goldenaudiobooks",
   "language": "en",
@@ -36,9 +36,9 @@
     "timeoutMilliseconds": 30000
   },
   "minimumAppVersion": "1.7.0",
-  "name": "Goldenaudiobooks (Prototype)",
+  "name": "Golden Audiobooks",
   "releaseTrack": "beta",
   "status": "active",
   "universalLink": "https://synthetiq.uk/manga/modules/goldenaudiobooks",
-  "version": "0.1.0"
+  "version": "1.0.0"
 }
