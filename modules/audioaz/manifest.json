@@ -19,12 +19,12 @@
   "contractVersion": 1,
   "entry": {
     "path": "modules/audioaz/index.js",
-    "sha256": "C45EA73A6A3B76DFD050E13DCA8C89035B5A06ECB068D4554D5EED8BB08FCB03"
+    "sha256": "c45ea73a6a3b76dfd050e13dca8c89035b5a06ecb068d4554d5eed8bb08fcb03"
   },
   "familyID": "audioaz",
   "icon": {
     "path": "modules/audioaz/icon.png",
-    "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+    "sha256": "abbcbc4e308c5e8848695a861dd96194d0973bcf6cb6228778af5a65d33394da"
   },
   "id": "audioaz",
   "language": "multi",

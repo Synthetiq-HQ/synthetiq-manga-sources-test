@@ -18,12 +18,12 @@
   "contractVersion": 1,
   "entry": {
     "path": "modules/hot-audiobooks/index.js",
-    "sha256": "A122331F62E8A87B58B1B07DECC6E8E7681B50AEB5874D5F70279EC412AD7AAF"
+    "sha256": "a122331f62e8a87b58b1b07decc6e8e7681b50aeb5874d5f70279ec412ad7aaf"
   },
   "familyID": "hot-audiobooks",
   "icon": {
     "path": "modules/hot-audiobooks/icon.png",
-    "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+    "sha256": "abbcbc4e308c5e8848695a861dd96194d0973bcf6cb6228778af5a65d33394da"
   },
   "id": "hot-audiobooks",
   "language": "en",

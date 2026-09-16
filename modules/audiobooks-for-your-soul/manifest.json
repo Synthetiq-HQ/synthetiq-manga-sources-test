@@ -17,12 +17,12 @@
   "contractVersion": 1,
   "entry": {
     "path": "modules/audiobooks-for-your-soul/index.js",
-    "sha256": "C45508570C7C4C8A87AE264D619CC368A98DD09E672BE5688FF0CF24D5519BC3"
+    "sha256": "c45508570c7c4c8a87ae264d619cc368a98dd09e672be5688ff0cf24d5519bc3"
   },
   "familyID": "audiobooks-for-your-soul",
   "icon": {
     "path": "modules/audiobooks-for-your-soul/icon.png",
-    "sha256": "ABBCBC4E308C5E8848695A861DD96194D0973BCF6CB6228778AF5A65D33394DA"
+    "sha256": "abbcbc4e308c5e8848695a861dd96194d0973bcf6cb6228778af5a65d33394da"
   },
   "id": "audiobooks-for-your-soul",
   "language": "en",
