@@ -14,10 +14,6 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-- Goldenaudiobooks
-- Hot Audiobooks
-- AudioAZ
-- Audiobooks For Your Soul
-- AudioBB
+There are currently no active staging modules. Golden Audiobooks was promoted to the [production source repository](https://github.com/Synthetiq-HQ/synthetiq-manga-sources), and the remaining audiobook candidates were moved to a private local queue for one-at-a-time review.
 
-All five are experimental audio modules with `contentRating: unknown`. They remain beta and require a separate rights, safety, and stability review before promotion.
+Add the next candidate here only when it is ready for an explicit user test cycle. The catalogue is intentionally empty between candidates so users do not install unfinished sources.
