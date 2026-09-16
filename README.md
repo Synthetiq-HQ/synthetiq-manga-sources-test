@@ -14,6 +14,6 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-The current staging candidate is **Hot Audiobooks**. Golden Audiobooks was promoted to the [production source repository](https://github.com/Synthetiq-HQ/synthetiq-manga-sources), and the remaining audiobook candidates are kept in a private local queue for one-at-a-time review.
+The current staging candidate is **AudioAZ**. Golden Audiobooks and Hot Audiobooks were promoted to the [production source repository](https://github.com/Synthetiq-HQ/synthetiq-manga-sources), and the remaining audiobook candidates are kept in a private local queue for one-at-a-time review.
 
 Only one candidate is kept here at a time so users do not install unfinished sources in parallel.
