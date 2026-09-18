@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const expectedSlugs = ["audioaz"];
+const expectedSlugs = ["audioaz", "chikari"];
 const hashPattern = /^[a-f0-9]{64}$/i;
 const versionPattern = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/;
 
@@ -49,7 +49,7 @@ assert.deepEqual(moduleDirectories, [...expectedSlugs].sort(), "module tree cont
 for (const entry of index.modules) {
   assert.equal(entry.id, entry.familyID, `${entry.id} family identity must be stable`);
   assert.match(entry.version, versionPattern);
-  assert.equal(entry.contentType, "audio");
+  assert.equal(entry.contentType, entry.id === "chikari" ? "pageImages" : "audio");
   assert.equal(entry.status, "active");
   const manifest = await readJSON(entry.manifest.path);
   for (const key of ["id", "familyID", "name", "version", "language", "contentType", "contentRating", "releaseTrack", "status"]) {
@@ -68,9 +68,9 @@ for (const entry of index.modules) {
   const icon = await readFile(path.join(root, manifest.icon.path));
   assert.equal(icon.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", `${entry.id} icon must be PNG`);
   const module = await loadModule(entry.id);
-  for (const handler of ["searchResults", "extractDetails", "extractChapters", "extractAudio"]) {
+  for (const handler of ["searchResults", "extractDetails", "extractChapters", entry.contentType === "audio" ? "extractAudio" : "extractImages"]) {
     assert.equal(typeof module[handler], "function", `${entry.id} missing ${handler}`);
   }
 }
 
-console.log(`Validated ${index.modules.length} test modules, assets, hashes, and audio handlers.`);
+console.log(`Validated ${index.modules.length} test modules, assets, hashes, and content handlers.`);

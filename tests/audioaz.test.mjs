@@ -84,9 +84,9 @@ test("AudioAZ excludes explicitly adult-labelled entries and off-host pages", as
   await assert.rejects(() => module.extractDetails("https://example.com/en/archive/fixture"), /Invalid AudioAZ audiobook page/i);
 });
 
-test("AudioAZ declares the single staging module", async () => {
+test("AudioAZ remains in the staging catalogue", async () => {
   const index = JSON.parse(await readFile(new URL("index.json", root), "utf8"));
-  assert.deepEqual(index.modules.map((entry) => entry.id), ["audioaz"]);
+  assert.equal(index.modules.filter((entry) => entry.id === "audioaz").length, 1);
   const manifest = JSON.parse(await readFile(new URL("modules/audioaz/manifest.json", root), "utf8"));
   assert.equal(manifest.contentType, "audio");
   assert.equal(manifest.contentRating, "suggestive");
