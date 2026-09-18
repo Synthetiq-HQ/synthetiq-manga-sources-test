@@ -4,6 +4,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --test tests/audioaz.test.mjs modules/chikari/test.mjs && node scripts/validate-test-repo.mjs && node scripts/check-production-overlap.mjs"
+    "test": "node --test tests/audioaz.test.mjs && node scripts/validate-test-repo.mjs && node scripts/check-production-overlap.mjs"
   }
 }

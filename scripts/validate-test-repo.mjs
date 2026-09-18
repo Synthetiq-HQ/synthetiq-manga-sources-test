@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const expectedSlugs = ["audioaz", "chikari"];
+const expectedSlugs = ["audioaz"];
 const hashPattern = /^[a-f0-9]{64}$/i;
 const versionPattern = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/;
 
@@ -49,7 +49,7 @@ assert.deepEqual(moduleDirectories, [...expectedSlugs].sort(), "module tree cont
 for (const entry of index.modules) {
   assert.equal(entry.id, entry.familyID, `${entry.id} family identity must be stable`);
   assert.match(entry.version, versionPattern);
-  assert.equal(entry.contentType, entry.id === "chikari" ? "pageImages" : "audio");
+  assert.equal(entry.contentType, "audio");
   assert.equal(entry.status, "active");
   const manifest = await readJSON(entry.manifest.path);
   for (const key of ["id", "familyID", "name", "version", "language", "contentType", "contentRating", "releaseTrack", "status"]) {
