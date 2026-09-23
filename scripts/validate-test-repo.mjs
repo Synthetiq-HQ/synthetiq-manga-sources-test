@@ -6,9 +6,14 @@ import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const expectedSlugs = ["audioaz"];
 const hashPattern = /^[a-f0-9]{64}$/i;
 const versionPattern = /^[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?$/;
+const handlersByType = {
+  pageImages: ["searchResults", "extractDetails", "extractChapters", "extractImages"],
+  text: ["searchResults", "extractDetails", "extractChapters", "extractText"],
+  publication: ["searchResults", "extractDetails", "extractResources"],
+  audio: ["searchResults", "extractDetails", "extractChapters", "extractAudio"],
+};
 
 async function readJSON(relativePath) {
   return JSON.parse(await readFile(path.join(root, relativePath), "utf8"));
@@ -38,7 +43,12 @@ const index = await readJSON("index.json");
 assert.equal(index.schemaVersion, 1, "unsupported catalogue schema");
 assert.equal(new URL(index.repository.homepage).hostname, "github.com");
 assert.equal(new URL(index.repository.universalLink).protocol, "https:");
-assert.deepEqual(index.modules.map((entry) => entry.id), expectedSlugs, "test catalogue contains unexpected modules or order");
+assert.ok(Array.isArray(index.modules) && index.modules.length <= 1, "test catalogue must have at most one candidate");
+const expectedSlugs = index.modules.map((entry) => {
+  const match = String(entry.manifest?.path || "").match(/^modules\/([a-z0-9-]+)\/manifest\.json$/);
+  assert.ok(match, `${entry.id} has an invalid manifest path`);
+  return match[1];
+});
 
 const moduleDirectories = (await readdir(path.join(root, "modules"), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory())
@@ -46,16 +56,20 @@ const moduleDirectories = (await readdir(path.join(root, "modules"), { withFileT
   .sort();
 assert.deepEqual(moduleDirectories, [...expectedSlugs].sort(), "module tree contains non-test modules");
 
-for (const entry of index.modules) {
+for (const [position, entry] of index.modules.entries()) {
+  const slug = expectedSlugs[position];
   assert.equal(entry.id, entry.familyID, `${entry.id} family identity must be stable`);
   assert.match(entry.version, versionPattern);
-  assert.equal(entry.contentType, "audio");
+  assert.ok(handlersByType[entry.contentType], `${entry.id} has unsupported content type`);
   assert.equal(entry.status, "active");
   const manifest = await readJSON(entry.manifest.path);
   for (const key of ["id", "familyID", "name", "version", "language", "contentType", "contentRating", "releaseTrack", "status"]) {
     assert.equal(manifest[key], entry[key], `${entry.id} manifest/index mismatch for ${key}`);
   }
   assert.equal(manifest.contractVersion, 1);
+  assert.equal(manifest.entry.path, `modules/${slug}/index.js`);
+  assert.equal(manifest.icon.path, `modules/${slug}/icon.png`);
+  assert.equal(entry.icon.path, manifest.icon.path);
   assert.equal(new URL(manifest.baseURL).protocol, "https:");
   assert.ok(manifest.allowedHosts.includes(new URL(manifest.baseURL).hostname), `${entry.id} base host missing from allowlist`);
   assert.ok(manifest.limits.timeoutMilliseconds >= 1000 && manifest.limits.timeoutMilliseconds <= 30000);
@@ -67,8 +81,8 @@ for (const entry of index.modules) {
   await assertSafeAsset(entry.icon, `${entry.id} catalogue icon`);
   const icon = await readFile(path.join(root, manifest.icon.path));
   assert.equal(icon.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", `${entry.id} icon must be PNG`);
-  const module = await loadModule(entry.id);
-  for (const handler of ["searchResults", "extractDetails", "extractChapters", entry.contentType === "audio" ? "extractAudio" : "extractImages"]) {
+  const module = await loadModule(slug);
+  for (const handler of handlersByType[entry.contentType]) {
     assert.equal(typeof module[handler], "function", `${entry.id} missing ${handler}`);
   }
 }

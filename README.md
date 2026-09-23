@@ -4,7 +4,8 @@ This is the public staging catalogue for Synthetiq Books modules. It follows the
 
 ## Workflow
 
-1. Add a candidate module and its deterministic fixtures here.
+1. Add a candidate module and its deterministic fixtures here, along with
+   `tests/<slug>.test.mjs`.
 2. Run the local and GitHub Actions checks.
 3. Add this repository’s `index.json` URL to a development build of Synthetiq Books and test the module.
 4. After approval, promote the exact tested module to the production repository with its final release metadata.
@@ -14,6 +15,11 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-The current staging candidate is **AudioAZ**. Golden Audiobooks and Hot Audiobooks were promoted to the [production source repository](https://github.com/Synthetiq-HQ/synthetiq-manga-sources), and the remaining audiobook candidates are kept in a private local queue for one-at-a-time review.
+None. AudioAZ was already promoted to the production catalogue. This local
+agent checkout starts empty and accepts one candidate at a time. Its validator
+checks the declared module type and its test runner requires a focused
+`tests/<slug>.test.mjs` before `npm test` can pass.
 
-Only one candidate is kept here at a time so users do not install unfinished sources in parallel.
+The GitHub `main` of this staging repository still contains AudioAZ until the
+local cleanup commit is published. Do not tell users that the hosted test
+catalogue is empty based on this local checkout alone.

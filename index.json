@@ -1,27 +1,6 @@
 {
-  "generatedAt": "2026-09-16T00:00:00Z",
-  "modules": [
-    {
-      "id": "audioaz",
-      "familyID": "audioaz",
-      "name": "AudioAZ (Prototype)",
-      "version": "0.1.0",
-      "language": "multi",
-      "contentType": "audio",
-      "contentRating": "suggestive",
-      "releaseTrack": "beta",
-      "status": "active",
-      "sortPriority": 1,
-      "manifest": {
-        "path": "modules/audioaz/manifest.json",
-        "sha256": "32bd5e47872d20f133aadd06b6a6a0f6b5655f82931de715d1794552180d1239"
-      },
-      "icon": {
-        "path": "modules/audioaz/icon.png",
-        "sha256": "1d3ffbdda36c5d425831926e09c7da4258eb527022c27243c7a2a8cfc5305043"
-      }
-    }
-  ],
+  "generatedAt": "2026-09-23T20:32:47Z",
+  "modules": [],
   "repository": {
     "homepage": "https://github.com/Synthetiq-HQ/synthetiq-manga-sources-test",
     "id": "synthetiq.sources.test",
