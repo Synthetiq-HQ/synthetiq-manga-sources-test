@@ -5,7 +5,7 @@
       "id": "books-owned-pi-qa-v1",
       "familyID": "books-owned-pi-qa",
       "name": "Synthetiq Manga",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "language": "multi",
       "contentType": "pageImages",
       "contentRating": "suggestive",
@@ -13,7 +13,7 @@
       "status": "active",
       "manifest": {
         "path": "modules/books-owned-pi-qa/manifest.json",
-        "sha256": "f6739976de7d0319f63c0117b0880db28550eed33ebdf7293648a928c1fcdac8"
+        "sha256": "5c01d540741a0f3c990ab58597506f36836430d0de85d648c4db3bba6f124c3a"
       },
       "icon": {
         "path": "modules/books-owned-pi-qa/icon.png",

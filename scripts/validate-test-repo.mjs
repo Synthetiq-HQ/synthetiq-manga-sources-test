@@ -4,6 +4,7 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
+import { validateNativeManifest } from "./native-manifest-contract.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const hashPattern = /^[a-f0-9]{64}$/i;
@@ -65,6 +66,7 @@ for (const [position, entry] of index.modules.entries()) {
   assert.ok(handlersByType[entry.contentType], `${entry.id} has unsupported content type`);
   assert.equal(entry.status, "active");
   const manifest = await readJSON(entry.manifest.path);
+  validateNativeManifest(manifest);
   for (const key of ["id", "familyID", "name", "version", "language", "contentType", "contentRating", "releaseTrack", "status"]) {
     assert.equal(manifest[key], entry[key], `${entry.id} manifest/index mismatch for ${key}`);
   }

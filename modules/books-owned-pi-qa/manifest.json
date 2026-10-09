@@ -3,7 +3,7 @@
   "familyID": "books-owned-pi-qa",
   "legacyIDs": [],
   "name": "Synthetiq Manga",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "minimumAppVersion": "2.5.3",
   "releaseTrack": "beta",
   "status": "active",
@@ -13,6 +13,7 @@
   "contractVersion": 1,
   "isFlagship": false,
   "baseURL": "https://books-content-staging.synthetiq.uk",
+  "universalLink": "https://synthetiq.uk/manga/modules/books-owned-pi-qa",
   "allowedHosts": [
     "books-content-staging.synthetiq.uk"
   ],
