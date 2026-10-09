@@ -59,6 +59,36 @@ test("Search pagination is stateless and reaches the terminal page", async () =>
   assert.equal((await context.searchResults("A & B", 3)).items.length, 0);
   assert.equal((await context.discoveryHome()).sections[0].items.length, 1);
 });
+test("Full archive catalogue pagination retains all 385 works without duplicates", async () => {
+  const { context } = runtime(url => {
+    const offset = Number(url.searchParams.get("cursor") || 0);
+    const end = Math.min(offset + 100, 385);
+    return response({ revision: "full-index-r1", items: Array.from({ length: end - offset }, (_, i) => ({
+      id: `fixture-${offset + i}`, title: `Fixture ${offset + i}`,
+    })), complete: end === 385, nextCursor: end === 385 ? null : String(end) });
+  });
+  const ids = [];
+  for (let page = 1; page <= 4; page++) {
+    const result = await context.discoveryFeed("popular", page);
+    assert.equal(result.hasMore, page < 4);
+    ids.push(...result.items.map(item => item.id));
+  }
+  assert.equal(ids.length, 385);
+  assert.equal(new Set(ids).size, 385);
+  assert.equal((await context.searchResults("", 5)).items.length, 0);
+});
+test("Wide edition metadata preserves 107 explicit choices and requests the selected edition", async () => {
+  const wide = Array.from({ length: 107 }, (_, i) => ({
+    editionID: `edition-${i}`, language: "en", languageName: "English",
+    translationGroup: { id: `group-${i}`, name: `Group ${i}` },
+  }));
+  const { context } = runtime(url => url.pathname.endsWith("/chapters")
+    ? response({ revision: "r1", items: [{ id: "c", editionID: wide[106].editionID, language: "en" }],
+      complete: true, nextCursor: null })
+    : response({ id: "w", workID: "w", defaultEditionID: wide[0].editionID, availableEditions: wide }));
+  assert.equal((await context.extractDetails("w")).availableEditions.length, 107);
+  assert.equal((await context.extractChapters("w", wide[106]))[0].editionID, wide[106].editionID);
+});
 test("Native Discover feed aliases paginate the archive catalogue", async () => {
   const { context } = runtime(fixture);
   for (const feed of ["archive", "popular", "latest"]) {
