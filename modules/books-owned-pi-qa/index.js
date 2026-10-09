@@ -82,7 +82,7 @@
     return { sections: [{ id: "archive", title: "Archive", style: "poster", items: data.items }] };
   }
   async function discoveryFeed(feedID, page = 1) {
-    if (feedID !== "archive") throw Error("feed_unavailable");
+    if (!["archive", "popular", "latest"].includes(feedID)) throw Error("feed_unavailable");
     return searchResults("", page);
   }
   const handlers = { searchResults, extractDetails, extractChapters, extractImages, discoveryHome, discoveryFeed };

@@ -15,7 +15,7 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-**Synthetiq Manga 0.1.2** (`books-owned-pi-qa-v1`), minimum Books **2.5.3**.
+**Synthetiq Manga 0.1.3** (`books-owned-pi-qa-v1`), minimum Books **2.5.5**.
 This is a staging candidate using an isolated, owner-approved installation key.
 It is not production-certified and does not replace or migrate SynManga libraries.
 Unapproved devices cannot access the private staging catalogue or media.
@@ -23,6 +23,10 @@ Unapproved devices cannot access the private staging catalogue or media.
 0.1.2 corrects the native installer's required universal-link metadata. The
 module script and identities are unchanged. The validator now checks the native
 manifest contract, not only script handlers and hashes.
+
+0.1.3 accepts Books' standard Discover feed names and retains stateless archive
+pagination. These aliases use the staging catalogue, not popularity rankings or
+predicted releases. Books 2.5.5 pins the revised script exactly.
 
 Add this repository in Books, explicitly install the candidate, and open its
 Test Connection settings to share the public installation key for temporary

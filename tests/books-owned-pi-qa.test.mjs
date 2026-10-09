@@ -59,6 +59,15 @@ test("Search pagination is stateless and reaches the terminal page", async () =>
   assert.equal((await context.searchResults("A & B", 3)).items.length, 0);
   assert.equal((await context.discoveryHome()).sections[0].items.length, 1);
 });
+test("Native Discover feed aliases paginate the archive catalogue", async () => {
+  const { context } = runtime(fixture);
+  for (const feed of ["archive", "popular", "latest"]) {
+    assert.equal((await context.discoveryFeed(feed, 1)).items[0].id, "one");
+    assert.equal((await context.discoveryFeed(feed, 2)).items[0].id, "two");
+    assert.equal((await context.discoveryFeed(feed, 3)).items.length, 0);
+  }
+  await assert.rejects(context.discoveryFeed("unknown", 1), /feed_unavailable/);
+});
 test("Empty translations never fall back", async () => {
   const { context } = runtime(url => url.pathname.endsWith("/chapters")
     ? response({ revision: "r1", items: [], complete: true, nextCursor: null }) : fixture(url));
