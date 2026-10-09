@@ -1,0 +1,104 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import vm from "node:vm";
+
+const origin = "https://books-content-staging.synthetiq.uk";
+const script = await readFile(new URL("../modules/books-owned-pi-qa/index.js", import.meta.url), "utf8");
+const editions = [
+  { editionID: "en", language: "en", languageName: "English" },
+  { editionID: "ar", language: "ar", languageName: "Arabic" },
+];
+const response = (body, status = 200, headers = {}) => ({ status, ok: status < 300, headers, body: JSON.stringify(body) });
+function runtime(handler) {
+  const calls = [];
+  const context = vm.createContext({ setTimeout: resolve => resolve(), fetchv2: async (url, headers, method, body, options) => {
+    assert.equal(new URL(url).origin, origin);
+    assert.equal(headers.Authorization, undefined);
+    assert.equal(method, "GET");
+    assert.equal(body, null);
+    assert.equal(options.followRedirects, false);
+    calls.push(url);
+    return handler(new URL(url));
+  } });
+  vm.runInContext(script, context);
+  return { context, calls };
+}
+function fixture(url, count = 3001) {
+  if (url.pathname.endsWith("/search")) {
+    const cursor = url.searchParams.get("cursor");
+    return response({ revision: "search-r1", items: [{ id: cursor ? "two" : "one", title: "Fixture" }],
+      complete: Boolean(cursor), nextCursor: cursor ? null : "cursor-two" });
+  }
+  if (url.pathname.endsWith("/works/w")) return response({ id: "w", workID: "w", defaultEditionID: "en", availableEditions: editions });
+  if (url.pathname.endsWith("/chapters")) {
+    const ar = url.pathname.includes("/editions/ar/");
+    const total = ar ? 1 : count;
+    const offset = Number(url.searchParams.get("cursor") || 0);
+    const end = Math.min(offset + 1000, total);
+    return response({ revision: "chapters-r1", items: Array.from({ length: end - offset }, (_, i) => ({
+      id: `${ar ? "ar" : "en"}-${offset + i}`, editionID: ar ? "ar" : "en", language: ar ? "ar" : "en",
+      title: `Chapter ${offset + i}`, number: offset + i,
+    })), complete: end === total, nextCursor: end === total ? null : String(end) });
+  }
+  return response({ pages: [{ assetID: "p", assetRevision: "r", pageIndex: 0, sha256: "0".repeat(64), byteCount: 123,
+    url: `${origin}/books/v1/assets/p/r` }] });
+}
+test("Complete chapter pagination and concurrent editions retain explicit ownership", async () => {
+  const { context } = runtime(fixture);
+  const [en, ar] = await Promise.all([context.extractChapters("w"), context.extractChapters("w", editions[1])]);
+  assert.equal(en.length, 3001); assert.equal(ar.length, 1);
+  assert.ok(en.every(c => c.language === "en")); assert.ok(ar.every(c => c.language === "ar"));
+  await assert.rejects(context.extractChapters("w", { editionID: "ar", language: "en" }), /edition_unavailable/);
+  assert.equal((await context.extractImages("ar-0"))[0].headers.Authorization, undefined);
+});
+test("Search pagination is stateless and reaches the terminal page", async () => {
+  const { context } = runtime(fixture);
+  assert.equal((await context.searchResults("A & B", 1)).items[0].id, "one");
+  assert.equal((await context.searchResults("A & B", 2)).items[0].id, "two");
+  assert.equal((await context.searchResults("A & B", 3)).items.length, 0);
+  assert.equal((await context.discoveryHome()).sections[0].items.length, 1);
+});
+test("Empty translations never fall back", async () => {
+  const { context } = runtime(url => url.pathname.endsWith("/chapters")
+    ? response({ revision: "r1", items: [], complete: true, nextCursor: null }) : fixture(url));
+  assert.equal((await context.extractChapters("w", editions[1])).length, 0);
+});
+test("Wrong-language and duplicate rows fail rather than silently merge", async () => {
+  for (const bad of ["mixed", "duplicate"]) {
+    const { context } = runtime(url => {
+      if (!url.pathname.endsWith("/chapters")) return fixture(url);
+      const row = { id: "c", editionID: bad === "mixed" ? "ar" : "en", language: "en" };
+      return response({ revision: "r1", items: bad === "mixed" ? [row] : [row, row], complete: true, nextCursor: null });
+    });
+    await assert.rejects(context.extractChapters("w"), /invalid_chapter_ownership/);
+  }
+});
+test("Denied access has no source fallback or module credentials", async () => {
+  const { context, calls } = runtime(() => response({ error: { code: "grant_expired", retryable: false } }, 401));
+  await assert.rejects(context.extractDetails("w"), /grant_expired/); assert.equal(calls.length, 1);
+});
+test("Retries respect the whole-operation budget", async () => {
+  const { context, calls } = runtime(() => response({ error: { code: "busy", retryable: true } }, 503, { "Retry-After": "0" }));
+  await assert.rejects(context.extractDetails("w"), /busy/); assert.equal(calls.length, 3);
+});
+test("Hostile or unordered image descriptors are rejected", async () => {
+  for (const bad of ["host", "order"]) {
+    const { context } = runtime(() => response({ pages: [{ assetID: "p", assetRevision: "r", pageIndex: bad === "order" ? 2 : 0,
+      sha256: "0".repeat(64), byteCount: 123, url: `${origin}${bad === "host" ? ".evil.test" : ""}/books/v1/assets/p/r` }] }));
+    await assert.rejects(context.extractImages("c"), /invalid_asset_descriptor/);
+  }
+});
+test("Revision changes discard the old snapshot and restart once", async () => {
+  let pages = 0;
+  const { context } = runtime(url => url.pathname.endsWith("/chapters") && ++pages === 2
+    ? response({ error: { code: "revision_changed", retryable: false } }, 409) : fixture(url));
+  assert.equal((await context.extractChapters("w")).length, 3001); assert.equal(pages, 6);
+});
+test("Cursor loops and oversized chapter lists fail explicitly", async () => {
+  const { context } = runtime(url => url.pathname.endsWith("/chapters")
+    ? response({ revision: "r1", items: [], complete: false, nextCursor: "same" }) : fixture(url));
+  await assert.rejects(context.extractChapters("w"), /invalid_chapter_pagination/);
+  const large = runtime(url => fixture(url, 10001));
+  await assert.rejects(large.context.extractChapters("w"), /chapter_list_too_large/);
+});

@@ -1,6 +1,26 @@
 {
-  "generatedAt": "2026-09-23T20:32:47Z",
-  "modules": [],
+  "generatedAt": "2026-10-09T19:00:00Z",
+  "modules": [
+    {
+      "id": "books-owned-pi-qa-v1",
+      "familyID": "books-owned-pi-qa",
+      "name": "Synthetiq Manga",
+      "version": "0.1.1",
+      "language": "multi",
+      "contentType": "pageImages",
+      "contentRating": "suggestive",
+      "releaseTrack": "beta",
+      "status": "active",
+      "manifest": {
+        "path": "modules/books-owned-pi-qa/manifest.json",
+        "sha256": "f6739976de7d0319f63c0117b0880db28550eed33ebdf7293648a928c1fcdac8"
+      },
+      "icon": {
+        "path": "modules/books-owned-pi-qa/icon.png",
+        "sha256": "ff757a30db4de5632c7ca79b08ae064f1c41d02a883dac4e46ad4846cab1a962"
+      }
+    }
+  ],
   "repository": {
     "homepage": "https://github.com/Synthetiq-HQ/synthetiq-manga-sources-test",
     "id": "synthetiq.sources.test",

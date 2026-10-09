@@ -1,0 +1,46 @@
+{
+  "id": "books-owned-pi-qa-v1",
+  "familyID": "books-owned-pi-qa",
+  "legacyIDs": [],
+  "name": "Synthetiq Manga",
+  "version": "0.1.1",
+  "minimumAppVersion": "2.5.3",
+  "releaseTrack": "beta",
+  "status": "active",
+  "language": "multi",
+  "contentType": "pageImages",
+  "contentRating": "suggestive",
+  "contractVersion": 1,
+  "isFlagship": false,
+  "baseURL": "https://books-content-staging.synthetiq.uk",
+  "allowedHosts": [
+    "books-content-staging.synthetiq.uk"
+  ],
+  "capabilities": [
+    "search",
+    "details",
+    "chapters",
+    "images",
+    "imageRequest",
+    "discovery"
+  ],
+  "entry": {
+    "path": "modules/books-owned-pi-qa/index.js",
+    "sha256": "2690e36ae809c491609a753f98e3f1c40cf23e03dbddab7f85b0bbc681033865"
+  },
+  "icon": {
+    "path": "modules/books-owned-pi-qa/icon.png",
+    "sha256": "ff757a30db4de5632c7ca79b08ae064f1c41d02a883dac4e46ad4846cab1a962"
+  },
+  "attribution": {
+    "author": "Synthetiq-HQ",
+    "website": "https://synthetiq.uk"
+  },
+  "limits": {
+    "maxConcurrentRequests": 2,
+    "maxResponseBytes": 16777216,
+    "maxScriptBytes": 524288,
+    "timeoutMilliseconds": 30000,
+    "cacheTTLSeconds": 0
+  }
+}

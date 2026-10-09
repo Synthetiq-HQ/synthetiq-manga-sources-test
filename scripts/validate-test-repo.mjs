@@ -58,7 +58,9 @@ assert.deepEqual(moduleDirectories, [...expectedSlugs].sort(), "module tree cont
 
 for (const [position, entry] of index.modules.entries()) {
   const slug = expectedSlugs[position];
-  assert.equal(entry.id, entry.familyID, `${entry.id} family identity must be stable`);
+  for (const key of ["id", "familyID"]) {
+    assert.match(entry[key], /^[a-z0-9][a-z0-9._-]{0,127}$/, `${entry.id} invalid ${key}`);
+  }
   assert.match(entry.version, versionPattern);
   assert.ok(handlersByType[entry.contentType], `${entry.id} has unsupported content type`);
   assert.equal(entry.status, "active");

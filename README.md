@@ -15,11 +15,16 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-None. AudioAZ was already promoted to the production catalogue. This local
-agent checkout starts empty and accepts one candidate at a time. Its validator
-checks the declared module type and its test runner requires a focused
-`tests/<slug>.test.mjs` before `npm test` can pass.
+**Synthetiq Manga 0.1.1** (`books-owned-pi-qa-v1`), minimum Books **2.5.3**.
+This is a staging candidate using an isolated, owner-approved installation key.
+It is not production-certified and does not replace or migrate SynManga libraries.
+Unapproved devices cannot access the private staging catalogue or media.
 
-The GitHub `main` of this staging repository still contains AudioAZ until the
-local cleanup commit is published. Do not tell users that the hosted test
-catalogue is empty based on this local checkout alone.
+Add this repository in Books, explicitly install the candidate, and open its
+Test Connection settings to share the public installation key for temporary
+approval. Never share private keys, account sessions or grants. Language/group
+selection appears only on titles with multiple editions. Incomplete translations
+remain incomplete and translated progress is local-only in this testing pass.
+
+AudioAZ remains in the production catalogue. Cleaning it out of this test index
+does not uninstall existing copies or delete their libraries/downloads.
