@@ -15,7 +15,7 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-**Synthetiq Manga 0.1.4** (`books-owned-pi-qa-v1`), minimum Books **2.5.6**.
+**Synthetiq Manga 0.1.5** (`books-owned-pi-qa-v1`), minimum Books **2.5.7**.
 This is a staging candidate using an isolated, owner-approved installation key.
 It is not production-certified and does not replace or migrate SynManga libraries.
 Unapproved devices cannot access the private staging catalogue or media.
@@ -34,6 +34,17 @@ supports up to 128 explicit editions rather than hiding choices above 64.
 Full catalogue delivery and representative native checks are recorded separately;
 this is not a guarantee that every archived image has been audited. Catalogue
 cards use placeholders where the frozen index has no cover metadata.
+
+0.1.5 is a metadata-only native compatibility update for reviewed staging cover
+artwork. Catalogue and details continue using the existing `image` field and
+protected staging asset route; the module script, hosts and identities are
+unchanged. Catalogue artwork is obtained through MyAnimeList's API, independently
+of optional user tracking. Books 2.5.7 revalidates these covers without saving
+them as offline chapter media. Unmatched or ambiguous titles keep placeholders.
+Provider availability and owner artwork acceptance remain separate test gates.
+The initial overlay contains ten reviewed titles, including One Piece, Naruto,
+Captain Tsubasa, Jujutsu Kaisen and Demon Slayer; it is not complete artwork for
+all 385 archived works. Other titles remain browseable with placeholders.
 
 Add this repository in Books, explicitly install the candidate, and open its
 Test Connection settings to share the public installation key for temporary

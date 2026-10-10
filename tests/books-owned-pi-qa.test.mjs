@@ -44,6 +44,21 @@ function fixture(url, count = 3001) {
   return response({ pages: [{ assetID: "p", assetRevision: "r", pageIndex: 0, sha256: "0".repeat(64), byteCount: 123,
     url: `${origin}/books/v1/assets/p/r` }] });
 }
+test("Catalogue and details preserve reviewed cover URLs without provider requests", async () => {
+  const image = `${origin}/books/v1/assets/cover-reviewed/${"a".repeat(64)}`;
+  const item = { id: "w", title: "Fixture", image };
+  const { context, calls } = runtime(url => url.pathname.endsWith("/search")
+    ? response({ revision: "r1", items: [item], complete: true, nextCursor: null })
+    : response(item));
+  assert.equal((await context.searchResults("Fixture", 1)).items[0].image, image);
+  assert.equal((await context.extractDetails("w")).image, image);
+  assert.equal(calls.length, 2);
+  assert.ok(calls.every(url => new URL(url).origin === origin));
+});
+test("Absent cover metadata remains an empty image, not a fabricated page", async () => {
+  const { context } = runtime(() => response({ id: "w", title: "Fixture", image: "" }));
+  assert.equal((await context.extractDetails("w")).image, "");
+});
 test("Complete chapter pagination and concurrent editions retain explicit ownership", async () => {
   const { context } = runtime(fixture);
   const [en, ar] = await Promise.all([context.extractChapters("w"), context.extractChapters("w", editions[1])]);
