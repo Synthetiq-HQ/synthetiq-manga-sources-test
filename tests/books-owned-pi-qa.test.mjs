@@ -12,7 +12,8 @@ const editions = [
 const response = (body, status = 200, headers = {}) => ({ status, ok: status < 300, headers, body: JSON.stringify(body) });
 function runtime(handler) {
   const calls = [];
-  const context = vm.createContext({ setTimeout: resolve => resolve(), fetchv2: async (url, headers, method, body, options) => {
+  const delays = [];
+  const context = vm.createContext({ setTimeout: (resolve, delay) => { delays.push(delay); resolve(); }, fetchv2: async (url, headers, method, body, options) => {
     assert.equal(new URL(url).origin, origin);
     assert.equal(headers.Authorization, undefined);
     assert.equal(method, "GET");
@@ -22,7 +23,7 @@ function runtime(handler) {
     return handler(new URL(url));
   } });
   vm.runInContext(script, context);
-  return { context, calls };
+  return { context, calls, delays };
 }
 function fixture(url, count = 3001) {
   if (url.pathname.endsWith("/search")) {
@@ -135,6 +136,42 @@ test("Denied access has no source fallback or module credentials", async () => {
 test("Retries respect the whole-operation budget", async () => {
   const { context, calls } = runtime(() => response({ error: { code: "busy", retryable: true } }, 503, { "Retry-After": "0" }));
   await assert.rejects(context.extractDetails("w"), /busy/); assert.equal(calls.length, 3);
+});
+test("Temporary HTML gateway errors retry without requiring a JSON error body", async () => {
+  for (const status of [429, 500, 502, 503, 504]) {
+    let attempts = 0;
+    const { context, calls } = runtime(() => ++attempts === 1
+      ? { status, ok: false, headers: { "Retry-After": "0" }, body: "<html>Temporarily unavailable</html>" }
+      : response({ id: "w", title: "Fixture" }));
+    assert.equal((await context.extractDetails("w")).id, "w");
+    assert.equal(calls.length, 2);
+  }
+});
+test("Retry-After HTTP dates are respected within the original request budget", async () => {
+  const retryDate = new Date(Date.now() + 5000).toUTCString();
+  let attempts = 0;
+  const { context, delays } = runtime(() => ++attempts === 1
+    ? response({ error: { code: "busy", retryable: true } }, 503, { "Retry-After": retryDate })
+    : response({ id: "w" }));
+  await context.extractDetails("w");
+  assert.equal(delays.length, 1);
+  assert.ok(delays[0] >= 3000 && delays[0] <= 5000);
+});
+test("Long Retry-After values never extend the deadline or immediately retry", async () => {
+  for (const value of ["120", new Date(Date.now() + 120000).toUTCString()]) {
+    const { context, calls, delays } = runtime(() => response(
+      { error: { code: "busy", retryable: true } }, 503, { "Retry-After": value }));
+    await assert.rejects(context.extractDetails("w"), /busy/);
+    assert.equal(calls.length, 1);
+    assert.equal(delays.length, 0);
+  }
+});
+test("Malformed success and HTML access denials are not retried", async () => {
+  for (const status of [200, 401, 403, 404]) {
+    const { context, calls } = runtime(() => ({ status, ok: status === 200, headers: {}, body: "<html>Unavailable</html>" }));
+    await assert.rejects(context.extractDetails("w"));
+    assert.equal(calls.length, 1);
+  }
 });
 test("Hostile or unordered image descriptors are rejected", async () => {
   for (const bad of ["host", "order"]) {

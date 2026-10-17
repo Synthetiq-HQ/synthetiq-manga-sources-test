@@ -15,10 +15,20 @@ The overlap check fails if a module is present in both catalogues. That keeps th
 
 ## Current candidates
 
-**Synthetiq Manga 0.1.5** (`books-owned-pi-qa-v1`), minimum Books **2.5.7**.
+**Synthetiq Manga 0.1.6** (`books-owned-pi-qa-v1`), minimum Books **2.5.8**.
 This is a staging candidate using an isolated, owner-approved installation key.
 It is not production-certified and does not replace or migrate SynManga libraries.
 Unapproved devices cannot access the private staging catalogue or media.
+
+0.1.6 retries temporary gateway errors even when they return HTML rather than
+JSON, respects numeric and HTTP-date Retry-After values, and retains the original
+28-second/two-retry operation budget. Successful malformed responses and access
+denials are never retried. Source/family/content identities, explicit language
+selection and approved hosts are unchanged. Books 2.5.8 bounds whole protected
+transfers, validates bytes and retries temporary page failures without changing
+public-source downloads. This remains an owner-approved staging candidate, not a
+general-access production API. See the dated transfer evidence for completed
+physical checks; fixture success alone is not a release certification.
 
 0.1.2 corrects the native installer's required universal-link metadata. The
 module script and identities are unchanged. The validator now checks the native

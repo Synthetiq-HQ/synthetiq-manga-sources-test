@@ -4,6 +4,12 @@
   const ORIGIN = "https://books-content-staging.synthetiq.uk";
   const BASE = "/books/v1/content";
   function budget() { return { deadline: Date.now() + 28000, attempts: 0, retries: 0 }; }
+  function retryDelay(header, retry) {
+    const value = String(header ?? "").trim();
+    if (/^\d+$/.test(value)) return Number(value) * 1000;
+    const date = value ? Date.parse(value) : NaN;
+    return Number.isFinite(date) ? Math.max(0, date - Date.now()) : 500 * (retry + 1);
+  }
   async function get(path, operation = budget()) {
     for (let retry = 0; ; retry++) {
       if (Date.now() >= operation.deadline || ++operation.attempts > 20) throw Error("request_budget_exhausted");
@@ -12,14 +18,18 @@
       if (Date.now() >= operation.deadline) throw Error("request_budget_exhausted");
       if (!response || response.bodyDropped) throw Error("response_unavailable");
       const raw = typeof response.body === "string" ? response.body : await response.text();
+      const successful = response.status >= 200 && response.status < 300 && response.ok !== false;
       let data;
-      try { data = JSON.parse(raw); } catch { throw Error("invalid_response"); }
-      if (response.status >= 200 && response.status < 300 && response.ok !== false) return data;
-      const error = Error(data.error?.code || "request_failed");
-      error.code = data.error?.code || "request_failed";
+      try { data = JSON.parse(raw); } catch {
+        if (successful) throw Error("invalid_response");
+      }
+      if (successful) return data;
+      const code = typeof data?.error?.code === "string" ? data.error.code : "http_" + response.status;
+      const error = Error(code);
+      error.code = code;
       const header = Object.entries(response.headers || {}).find(([k]) => k.toLowerCase() === "retry-after")?.[1];
-      const delay = /^\d+$/.test(String(header)) ? Number(header) * 1000 : 500 * (retry + 1);
-      if (operation.retries >= 2 || ![429, 500, 502, 503, 504].includes(response.status) || data.error?.retryable === false ||
+      const delay = retryDelay(header, retry);
+      if (operation.retries >= 2 || ![429, 500, 502, 503, 504].includes(response.status) || data?.error?.retryable === false ||
           typeof globalThis.setTimeout !== "function" || Date.now() + delay >= operation.deadline) throw error;
       operation.retries++;
       await new Promise(resolve => globalThis.setTimeout(resolve, delay));

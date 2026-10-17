@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-10T14:54:00Z",
+  "generatedAt": "2026-10-17T16:42:26Z",
   "modules": [
     {
       "id": "books-owned-pi-qa-v1",
       "familyID": "books-owned-pi-qa",
       "name": "Synthetiq Manga",
-      "version": "0.1.5",
+      "version": "0.1.6",
       "language": "multi",
       "contentType": "pageImages",
       "contentRating": "suggestive",
@@ -13,7 +13,7 @@
       "status": "active",
       "manifest": {
         "path": "modules/books-owned-pi-qa/manifest.json",
-        "sha256": "71a2b1f278d2c5bc83074d9a97bae3430a0252d4680e2362cf5a410790a88cc3"
+        "sha256": "a35fe679215dd9ba7b7607c60f53808a7cd79a70db69b1de617e7104267f05ec"
       },
       "icon": {
         "path": "modules/books-owned-pi-qa/icon.png",
